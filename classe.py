@@ -56,25 +56,42 @@ class Matrix:
                     print(self)
                     break
 
-    def voo_levy(self, p_reacao):
-        i, j = random.sample(range(len(self.data)), 2)
-        self.reacao(p_reacao)
-        if (self.data[i] != '0' and self.data[j] != '0') or (self.data[i] == '0' and self.data[j] != '0') or (self.data[i] != '0' and self.data[j] == '0'):  #Se i tem uma partícula e j esta vazio
-            if self.data[i] == 'G':
-                # Verifica vizinhos em j para garantir que G pode ser inserido
-                vizinho_esq = self.data[j - 1] if j > 0 else '0'
-                vizinho_dir = self.data[j + 1] if j < len(self.data) - 1 else '0'
-                if vizinho_esq != 'G' and vizinho_dir != 'G':  # G pode ser inserido
-                    self.data[j], self.data[i] = self.data[i], '0'
-                    print(f"\nVoo de Lévy: Partícula G trocada de {i} para {j}.")
-                    print(self)
-                    
-            else:  # Se não é G (é P), troca diretamente
-                self.data[j], self.data[i] = self.data[i], '0'
-                print(f"\nVoo de Lévy: Partícula P trocada de {i} para {j}.")
-                print(self)
-               
+    def voo_levy(self, p_reacao, sigma):
+        i = random.randint(0, len(self.data) - 1)
+        z = random.uniform(0.01, 1.0)
+        r = z ** (-1 / sigma)
+        quantidade = len(self.data)
+        rj = int((r) % quantidade)
+        p_direcao = 0.5
+        if random.random() < p_direcao:
+            j = i + rj
+        else:
+            j = i - rj
 
+
+        j = j % quantidade
+        print(f"i: {i} rj: {rj} j: {j}")
+        self.reacao(p_reacao)
+
+        def troca_valida(pos_origem, pos_destino):
+            if self.data[pos_origem] == 'G':  # Partícula G indo para pos_destino
+                vizinho_esq = self.data[pos_destino - 1] if pos_destino > 0 else '0'
+                vizinho_dir = self.data[pos_destino + 1] if pos_destino < len(self.data) - 1 else '0'
+                return vizinho_esq != 'G' and vizinho_dir != 'G'
+            elif self.data[pos_destino] == 'G':  # Partícula G indo para pos_origem
+                vizinho_esq = self.data[pos_origem - 1] if pos_origem > 0 else '0'
+                vizinho_dir = self.data[pos_origem + 1] if pos_origem < len(self.data) - 1 else '0'
+                return vizinho_esq != 'G' and vizinho_dir != 'G'
+            return True  # Sem restrições para outras partículas
+
+        if troca_valida(i, j) and i != j:
+            self.data[i], self.data[j] = self.data[j], self.data[i]
+            print(f"\nVoo de Lévy: Partículas trocadas entre {i} e {j}.")
+            print(self)
+        else:
+            print(f"\nVoo de Lévy: Troca inválida entre {i} e {j}, restrições não atendidas.")
+
+               
     def inserir_particula(self, prob_p, p_reacao):
         self.reacao(p_reacao)
         self.tentativas_totais += 1

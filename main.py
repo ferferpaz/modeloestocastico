@@ -1,6 +1,7 @@
 from classe import Matrix
 import numpy as np
 import random
+import math
 """
     Realiza a distribuição das partículas em uma linha horizontal utilizando o conceito de voo de Lévy.
 
@@ -19,32 +20,34 @@ import random
     - Caso a partícula possa ser inserida, ela é posicionada na matriz. Caso contrário, o processo é reiniciado.
     - toda vez que nós tentamos inserir uma particula, contabilizamos +1 em uma variavel para saber quantas tentativas ocorreram de inserir particulas
 """
-quantidade = 5 # quantidade de linhas da rede
+quantidade = 10 # quantidade de linhas da rede
 tempo = 5
 t_simulacao = quantidade * tempo
 
 sitios = Matrix(int(quantidade))  # objeto criado
 
 p_reacao= 1.0
-p_levy = 0.5  # probabilidade de ocorrer o voo de Lévy
+p_levy = 0.9  # probabilidade de ocorrer o voo de Lévy
 pps = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+pp = 0.3
+sigma = 1
 
 with open("resultados.txt", "w") as file:
     file.write("Resultados da Simulacao\n")
     file.write("Probabilidade de Difusao e Tentativas Totais\n")
     
-    for i in pps:
-        sitios.tentativas_totais = 0
-        for _ in range(t_simulacao):
-            if random.random() < p_levy:
-                sitios.voo_levy(p_reacao)
-                sitios.inserir_particula(i, p_reacao)
-                sitios.salvar_estado()
-            else:
-                sitios.inserir_particula(i, p_reacao)
-                sitios.salvar_estado()
+    #for i in pps:
+    sitios.tentativas_totais = 0
+    for _ in range(t_simulacao):
+        if random.random() < p_levy:
+            sitios.voo_levy(p_reacao, sigma)
+            sitios.inserir_particula(pp, p_reacao)
+            sitios.salvar_estado()
+        else:
+            sitios.inserir_particula(pp, p_reacao)
+            sitios.salvar_estado()
 
-        file.write(f'\nProbabilidade de P: {i}\n')
+        file.write(f'\nProbabilidade de P: {pp}\n')
         file.write(f'Total de tentativas: {sitios.tentativas_totais}\n')
         file.write(f'Densidade vazia: {sitios.densidade_historico}\n')
         file.write(f'Densidade P: {sitios.d_his_P}\n')
