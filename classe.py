@@ -6,7 +6,7 @@ class Matrix:
     """
     Tudo relacionado a construção da matriz e suas manipulações
     """
-    def __init__(self, linhas):
+    def __init__(self, quantidades):
         """
         Construtor da classe Matrix.
 
@@ -15,7 +15,7 @@ class Matrix:
         Argumentos:
             columns (int): Número de colunas da matriz.
         """
-        self.data = np.array(['0'] * linhas)  
+        self.data = np.array(['0'] * quantidades)  
         self.historico = [] 
         self.densidade_historico = []
         self.d_his_G = []
@@ -52,8 +52,8 @@ class Matrix:
                 if random.random() < prob:
                     self.data[i] = self.data[i + 1] = '0'
                     #self.salvar_estado()
-                    print(f'Reação entre posições {i} e {i + 1}')
-                    print(self)
+                    #print(f'Reação entre posições {i} e {i + 1}')
+                    #print(self)
                     break
 
     def voo_levy(self, p_reacao, sigma):
@@ -68,9 +68,8 @@ class Matrix:
         else:
             j = i - rj
 
-
         j = j % quantidade
-        print(f"i: {i} rj: {rj} j: {j}")
+        #print(f"i: {i} rj: {rj} j: {j}")
         self.reacao(p_reacao)
 
         def troca_valida(pos_origem, pos_destino):
@@ -86,12 +85,9 @@ class Matrix:
 
         if troca_valida(i, j) and i != j:
             self.data[i], self.data[j] = self.data[j], self.data[i]
-            print(f"\nVoo de Lévy: Partículas trocadas entre {i} e {j}.")
-            print(self)
-        else:
-            print(f"\nVoo de Lévy: Troca inválida entre {i} e {j}, restrições não atendidas.")
-
-               
+            #print(f"\nVoo de Lévy: Partículas trocadas entre {i} e {j}.")
+            #print(self)
+ 
     def inserir_particula(self, prob_p, p_reacao):
         self.reacao(p_reacao)
         self.tentativas_totais += 1
@@ -102,7 +98,6 @@ class Matrix:
             if particula == 'P' or \
                (particula == 'G' and not any(self.data[max(0, posicao-1):min(len(self.data), posicao+2)] == 'G')):
                 self.data[posicao] = particula
-                #self.salvar_estado()
 
-                print(f'Partícula {particula} inserida na posição {posicao}')
-                print(self)
+                #print(f'Partícula {particula} inserida na posição {posicao}')
+                #print(self)
