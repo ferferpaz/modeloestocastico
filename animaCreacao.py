@@ -41,7 +41,7 @@ class Rede:
 # Configurações iniciais
 linhas = 15
 rede = Rede(linhas)
-pp = 0.5 
+pp = 0.2
 pg = 1 - pp  
 
 fig, ax = plt.subplots(figsize=(10, 2))
@@ -70,6 +70,6 @@ def atualizar(frame):
 
 ani = animation.FuncAnimation(fig, atualizar, frames=100, interval=1500, repeat=False)
 
-ani.save("animacao_rede.gif", writer="pillow", fps=1)
+ani.save("animacao_rede.gif", writer="pillow", fps=1) #salvar em pastas de resultados uma pasta para cada simulaçaõ
 
 plt.show()
