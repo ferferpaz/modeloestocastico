@@ -1,6 +1,10 @@
-import numpy as np
+from collections import defaultdict
 import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
 import random
+import csv
+import os
 
 class Matrix:
     """
@@ -194,11 +198,57 @@ class Graficos(Matrix):
     """
     Extensão da classe Matrix para graficos de simulações.
     """
-    def visualizar_simulacao(self, quantidade):
+    def pgxvazios(self, quantidade, tempo, levy, sigma, pasta, novo_arquivo):
         """
         Cria uma representação visual da matriz ao longo do tempo usando cores diferentes.
         0 (espaços vazios): Preto
         G (partículas grandes): Vermelho
         P (partículas pequenas): Azul
         """
-        pass
+        dados_por_pg = defaultdict(lambda: {'soma_vazia': 0.0, 'soma_pequenas': 0.0, 'soma_grandes': 0.0, 'contagem': 0})
+
+        for arquivo_nome in os.listdir(pasta):
+            if arquivo_nome.endswith('.csv'):  
+                with open(os.path.join(pasta, arquivo_nome), mode='r') as file:
+                    reader = csv.DictReader(file)  
+                    for row in reader:
+                        iteracao = int(row['Iteracao'])
+                        if 1 <= iteracao <= tempo:
+                            pg = float(row['pg'])
+                            dados_por_pg[pg]['soma_vazia'] += float(row['Sitios Vazios'])
+                            dados_por_pg[pg]['soma_pequenas'] += float(row['Particulas Pequenas'])
+                            dados_por_pg[pg]['soma_grandes'] += float(row['Particulas Grandes'])
+                            dados_por_pg[pg]['contagem'] += 1
+
+        with open(novo_arquivo, mode='w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(["pg", "Sitios Vazios", "Particulas Pequenas", "Particulas Grandes"])
+            for pg, valores in sorted(dados_por_pg.items()):
+                contagem = valores['contagem']
+                media_vazia = valores['soma_vazia'] / contagem
+                media_pequenas = valores['soma_pequenas'] / contagem
+                media_grandes = valores['soma_grandes'] / contagem
+                writer.writerow([pg, media_vazia, media_pequenas, media_grandes])
+
+        print(f"Arquivo '{novo_arquivo}' criado com sucesso.")
+
+        dados = pd.read_csv(novo_arquivo)
+        pg = dados['pg']
+        densidade_p = dados['Particulas Pequenas']
+        densidade_g = dados['Particulas Grandes']
+
+        plt.figure(figsize=(10, 6))
+        plt.plot(pg, densidade_p, marker='^', color='black', label='Ocupação por Partículas Pequenas')
+        plt.plot(pg, densidade_g, marker='v', color='blue', label='Ocupação por Partículas Grandes')
+        plt.suptitle('Diagrama de Fase da Ocupação de Sítios', fontsize=18, fontweight='bold')
+        plt.title(f"levy = {levy}; sigma = {sigma}", fontsize=14, style='italic')
+        plt.xlabel('Probabilidade de Absorção de Partículas Grandes $p_g$', fontsize=14)
+        plt.ylabel('Quantidade de Sítios Ocupados', fontsize=14)
+        plt.xticks(fontsize=12)
+        plt.yticks(fontsize=12)
+        plt.legend(loc='best')
+        plt.grid(True)
+        plt.savefig("r_clevy09s1", dpi=300)
+        plt.show()
+
+

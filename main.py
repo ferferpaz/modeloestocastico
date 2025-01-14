@@ -16,14 +16,17 @@ p_levy = 0.0
 pps = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
 sigma = 2
 
-caminho_dos_arquivos = r'C:\Users\afern\OneDrive\Documentos\FURG\Fisicacomputacional\modeloestocastico\r_semlevy'
-os.makedirs(caminho_dos_arquivos, exist_ok=True)
+pasta_resultados = r'C:\Users\afern\OneDrive\Documentos\FURG\Fisicacomputacional\modeloestocastico\teste'
+pasta_grafico = r'C:\Users\afern\OneDrive\Documentos\FURG\Fisicacomputacional\modeloestocastico\teste'
+novo_arquivo = 'mediar_clevy09s1.csv'
+
+os.makedirs(pasta_resultados, exist_ok=True)
 x = datetime.now().strftime("%m%d_%H%M%S")
 
 def mostras(p_reacao, p_levy, sigma, quantidade, tempo, t_simulacao, pps, c):
     contador = 0
 
-    arquivo_nome = os.path.join(caminho_dos_arquivos, f"resultado_{c}_r{x}.csv")
+    arquivo_nome = os.path.join(pasta_resultados, f"resultado_{c}_r{x}.csv")
 
     with open(arquivo_nome, mode="a", newline="") as file:
         writer = csv.writer(file)
@@ -60,9 +63,12 @@ def mostras(p_reacao, p_levy, sigma, quantidade, tempo, t_simulacao, pps, c):
             
             print(f"Simulação para pp={pp}. Total de tentativas: {sitios.tentativas_totais}")
 
-qtd_mostras = 1
+qtd_mostras = 5
 for c in range(qtd_mostras):
     mostras(p_reacao, p_levy, sigma, quantidade, tempo, t_simulacao, pps, c)
+
+gera_grafico = Graficos(quantidade)
+gera_grafico.pgxvazios(quantidade, tempo, p_levy, sigma, pasta_grafico, novo_arquivo)
 
 
 
