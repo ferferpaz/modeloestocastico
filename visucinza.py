@@ -19,7 +19,7 @@ caminho_dos_arquivos = r'C:\Users\afern\OneDrive\Documentos\FURG\Fisicacomputaci
 os.makedirs(caminho_dos_arquivos, exist_ok=True)
 x = datetime.now().strftime("%m%d_%H%M%S")
  
-def inserir_particula(self, prob_p, p_reacao):
+def inserir_particula(self, prob_p):
     """
     Insere uma partícula aleatória na matriz.
 
@@ -50,27 +50,29 @@ def simular_visualizacao(p_reacao, p_levy, sigma, quantidade, tempo, t_simulacao
         estado_numerico = []
         if random.random() < p_levy:
             sitios.voo_levy(p_reacao, sigma)
-            inserir_particula(pp, p_reacao)
-            estado = sitios.obter_estado()  
-            
-            for s in estado:
-                if s == '0':
-                    estado_numerico.append(0)
-                elif s == 'P':
-                    estado_numerico.append(1)
-                elif s == 'G':
-                    estado_numerico.append(2)
-            evolucao.append(estado_numerico)
+            inserir_particula(pp)
+              
+        for s in estado:
+            if s == '0':
+                estado_numerico.append(0)
+            elif s == 'P':
+                estado_numerico.append(1)
+            elif s == 'G':
+                estado_numerico.append(2)
         else:
-            inserir_particula(pp, p_reacao)
-            for s in estado:
-                if s == '0':
-                    estado_numerico.append(0)
-                elif s == 'P':
-                    estado_numerico.append(1)
-                elif s == 'G':
-                    estado_numerico.append(2)
-            evolucao.append(estado_numerico)
+            inserir_particula(pp)
+        
+        evolucao.append(estado_numerico)
+        estado = sitios.obter_estado()
+        for s in estado:
+            if s == '0':
+                estado_numerico.append(0)
+            elif s == 'P':
+                estado_numerico.append(1)
+            elif s == 'G':
+                estado_numerico.append(2)
+        
+        evolucao.append(estado_numerico)
         sitios.reacao(p_reacao)
         
         contador += 1

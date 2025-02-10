@@ -5,20 +5,21 @@ import random
 import csv
 import os
 
-quantidade = 10  # quantidade de sítios da rede
-tempo = 10
+quantidade = 300  # quantidade de sítios da rede
+tempo = 300
 t_simulacao = quantidade * tempo
 
 sitios = Matrix(int(quantidade))
 
 p_reacao = 1.0
-p_levy = 0.0
+p_levy = 0.3
 pps = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
 sigma = 2
 
-pasta_resultados = r'C:\Users\afern\OneDrive\Documentos\FURG\Fisicacomputacional\modeloestocastico\teste'
-pasta_grafico = r'C:\Users\afern\OneDrive\Documentos\FURG\Fisicacomputacional\modeloestocastico\teste'
-novo_arquivo = 'mediar_clevy09s1.csv'
+pasta_resultados = r'C:\Users\afern\OneDrive\Documentos\FURG\Fisicacomputacional\modeloestocastico'
+nome_pasta = f"levy{p_levy}s{sigma}"
+pasta_resultados = os.path.join(pasta_resultados, nome_pasta)
+novo_arquivo = f'mediar_clevy{p_levy}s{sigma}.csv'
 
 os.makedirs(pasta_resultados, exist_ok=True)
 x = datetime.now().strftime("%m%d_%H%M%S")
@@ -63,12 +64,13 @@ def mostras(p_reacao, p_levy, sigma, quantidade, tempo, t_simulacao, pps, c):
             
             print(f"Simulação para pp={pp}. Total de tentativas: {sitios.tentativas_totais}")
 
-qtd_mostras = 5
+qtd_mostras = 20
 for c in range(qtd_mostras):
     mostras(p_reacao, p_levy, sigma, quantidade, tempo, t_simulacao, pps, c)
 
+nomeg = f"levy{p_levy}s{sigma}.png"
 gera_grafico = Graficos(quantidade)
-gera_grafico.pgxvazios(quantidade, tempo, p_levy, sigma, pasta_grafico, novo_arquivo)
+gera_grafico.pgxvazios(quantidade, tempo, p_levy, sigma, pasta_resultados, novo_arquivo, nomeg)
 
 
 

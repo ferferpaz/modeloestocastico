@@ -198,12 +198,11 @@ class Graficos(Matrix):
     """
     Extensão da classe Matrix para graficos de simulações.
     """
-    def pgxvazios(self, quantidade, tempo, levy, sigma, pasta, novo_arquivo):
+    def pgxvazios(self, quantidade, tempo, levy, sigma, pasta, novo_arquivo, nomeg):
         """
-        Cria uma representação visual da matriz ao longo do tempo usando cores diferentes.
-        0 (espaços vazios): Preto
-        G (partículas grandes): Vermelho
-        P (partículas pequenas): Azul
+        Cria um grafico de prob de particulas grandes por sitios vazios.
+        G (partículas grandes): Linha azul
+        P (partículas pequenas): Linha preta
         """
         dados_por_pg = defaultdict(lambda: {'soma_vazia': 0.0, 'soma_pequenas': 0.0, 'soma_grandes': 0.0, 'contagem': 0})
 
@@ -248,7 +247,7 @@ class Graficos(Matrix):
         plt.yticks(fontsize=12)
         plt.legend(loc='best')
         plt.grid(True)
-        plt.savefig("r_clevy09s1", dpi=300)
+        plt.savefig(nomeg, dpi=300)
         plt.show()
 
 
